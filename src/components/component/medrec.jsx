@@ -20,8 +20,6 @@ export function Medrec() {
   }
   return (
     (<div className="flex flex-col min-h-screen bg-[#e6f2ff]">
-      <Navbar></Navbar>
-      
       <div className="flex flex-1 border-t border-muted-foreground/20">
         <main className="flex-1 p-8 bg-[#e6f2ff]">
           <div className="flex flex-col items-center space-y-4">

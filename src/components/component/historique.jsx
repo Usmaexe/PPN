@@ -121,7 +121,6 @@ export default function Consultations() {
 
   return (
     <div className="min-h-screen bg-[#e6f2ff] relative">
-      <Navbar />
       <div className="flex justify-between p-4">
         <Button
           className="flex items-center justify-center space-x-2 bg-blue-500 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:bg-blue-700 transition duration-300"

@@ -19,10 +19,18 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
-  const [selectedTab, setSelectedTab] = useState('Dossier Medical');
   
   const dropdownRef = useRef(null);
   const sidebarRef = useRef(null);
+
+
+  const [selectedTab, setSelectedTab] = useState(() => {
+    return localStorage.getItem('selectedTab') || 'Dossier Medical';
+  });
+  useEffect(() => {
+    localStorage.setItem('selectedTab', selectedTab);
+  }, [selectedTab]);
+  
 
   const toggleLanguage = (lang) => {
     setLanguage(lang);
@@ -78,11 +86,13 @@ export default function Navbar() {
   ];
 
   const navItems = [
-    { title: 'Accueil', href: '#' },
-    { title: 'Dossier Medical', href: '#' },
-    { title: 'Education à la Santé', href: '#' },
+    { title: 'Accueil', href: '/' },
+    { title: 'Dossier Medical', href: '/Historique' },
+    { title: 'Education à la Santé', href: '/ies/youth' },
     { title: 'Tests Psychologiques', href: '#' },
   ];
+
+  console.log(selectedTab);
 
   return (
     <nav className="fixed-navbar p-4 shadow-gray-300 shadow-md h-16 flex items-center justify-between bg-white text-black relative">
