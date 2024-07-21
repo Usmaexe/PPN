@@ -21,9 +21,7 @@ export function Profile() {
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-md overflow-hidden`}>
-      <Navbar />
-      
+    <div className={`bg-white rounded-lg shadow-md overflow-hidden`}>      
       <div className="flex justify-start p-4">
         <Button
           className="flex items-center justify-center space-x-2 bg-blue-500 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:bg-blue-700 transition duration-300"
