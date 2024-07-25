@@ -13,7 +13,7 @@ import SelectInput from "@/components/SelectInput";
 import "@/assets/css/links.css";
 import "@/assets/css/consultation.css";
 import {
-  motif,
+  motifs,
   antecedants,
   medicaments,
   habitudes,
@@ -30,7 +30,11 @@ import {
 import NavigationHeader from "@/components/NavigationHeader";
 import { printer } from "@/components/imagepath";
 
-const NouvelleConsultation = (props) => {
+
+export default function NouvelleConsultation({params})
+ {
+  const id = params.id;
+
   const pages = ["Patients", "Patient", "Consultation"];
   const defaultOption = [{ value: "0", label: "Choisir.." }];
   const router = useRouter();
@@ -53,6 +57,41 @@ const NouvelleConsultation = (props) => {
     actionName = "Ajouter";
   }
 
+  const [patient, setPatient] = useState(null); // Initialisé à null
+  const [loading, setLoading] = useState(true); // Indicateur de chargement
+  const [error, setError] = useState(null); // Gestion des erreurs
+
+  useEffect(() => {
+    const fetchPatient = async () => {
+      if (id) {
+        setLoading(true); // Début du chargement
+        try {
+          const response = await fetch(`http://localhost:8080/jeunes/${id}`);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          setPatient(data);
+        } catch (error) {
+          console.error('Error fetching patient:', error);
+          setError(error.message); // Enregistrement de l'erreur
+        } finally {
+          setLoading(false); // Fin du chargement
+        }
+      }
+    };
+
+    fetchPatient(); // Appeler la fonction async
+  }, [id]);
+
+  // Gestion du rendu en fonction de l'état de chargement et d'erreur
+  
+
+
+  
+
+  
+
   // -------STATES-------
   const [ChirurgicalOrHabitudes, setChirurgicalOrHabitudes] = useState(Chirurgical);
   const [choiceChirHab, setChoiceChirHab] = useState("");
@@ -67,7 +106,32 @@ const NouvelleConsultation = (props) => {
   const [isFamilialsChecked, setIsFamilialsChecked] = useState(false);
   const [isRadiologie, setIsRadiologie] = useState(false);
   const [isBiologie, setIsBiologie] = useState(false);
+  const [motif, setMotif] = useState("");
+  const [type, setTypeAntPer] = useState("")
+  const [specification, setSpecification]= useState("")
+  const [specificationAutre, setSpecificationAutre] = useState("")
+  const [nombre ,setNombre] = useState("");
+
+  const [historiqueClinique, setHistoriqueClinique] = useState("");
+  const [examenClinique,setExamenClinique] = useState("");
+  const [ordonnance, setOrdonnance] = useState("");
+
+  const [typeAntFam, setTypeAntFam] = useState("");
+  const [autre, setAutre] = useState("");
+
+  const [typeExamen, setTypeExamen] = useState("")
+  const [specificationExamen, setSpecificationExamen] = useState("")
+  const [autreSpecification, setAutreSpecification] = useState("")
+  const diagnostic = "";
+  const currentDate = new Date(); // Crée un nouvel objet Date avec la date et l'heure actuelles
+  const year = currentDate.getFullYear(); // Récupère l'année
+  const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Récupère le mois (ajoute 1 car les mois commencent à 0)
+  const day = String(currentDate.getDate()).padStart(2, '0'); // Récupère le jour du mois
+
+  const date = `${year}-${month}-${day}`;
   // const [options, setOptions] = useState(defaultOption);
+
+  
 
   // -------FUNCTIONS-------
   //PERMET D'AFFCIHER TYPE D'ANTECEDANTS PERSONNELS
@@ -112,6 +176,7 @@ const NouvelleConsultation = (props) => {
   //PERMET D'AFFICHER UNE LISTE DEROULANTE OU UN CHAMP TEXTE
   function DisplayTypeAntPer(selectedOption) {
     setAntPersonnel(selectedOption["value"]);
+    setTypeAntPer(selectedOption.value);
     const types = ["Medical", "Habitudes"];
     const allergies = ["Allergies Médicales", "Allergies Alimentaires"];
 
@@ -173,6 +238,11 @@ const NouvelleConsultation = (props) => {
     }
   }
 
+  // function handleMotif(selectedOption){
+  //   setSelectMotif(selectedOption["value"]);
+  //   console.log(selectMotif);
+  // }
+
   function HandleAntPersonnelChoice(selectedOption) {
     const otherInput = document.querySelector("div[id='type-autre-input-pers']");
     const habitudesChoices = ["Alcool", "Tabac", "Temps d'écran"];
@@ -186,15 +256,19 @@ const NouvelleConsultation = (props) => {
       if (selectedOption["value"] == "Alcool") {
         setChirurgicalOrHabitudes(alcoolFrequency);
         setChoiceChirHab("Alcool");
+        setSpecification("Alcool");
       } else if (selectedOption["value"] == "Tabac") {
         setChirurgicalOrHabitudes(tabacQuantity);
         setChoiceChirHab("Tabac");
+        setSpecification("Tabac");
       } else {
         setChirurgicalOrHabitudes(tempsEcran);
         setChoiceChirHab("Temps d'ecran");
+        setSpecification("Temps d'ecran");
       }
       otherInput.classList.add("hideInput");
     } else if (selectedOption["value"] == "AUTRE") {
+      setSpecification("autre")
       otherInput.classList.remove("hideInput");
       habitudesChoicesInput.classList.add("hideInput");
     } else {
@@ -217,7 +291,10 @@ const NouvelleConsultation = (props) => {
     }
   }
 
+  
+
   function HandleAntFamilial(selectedOption) {
+    setTypeAntFam(selectedOption.value);
     const otherInput = document.querySelector('div[id="type-autre-input-fam"]');
     setOtherTitleFam("Specifier Autre Antecedants Familials");
     if (selectedOption["value"] == "AUTRE") {
@@ -230,6 +307,7 @@ const NouvelleConsultation = (props) => {
   // POUR AFFICHER LA LISTE DES EXAMEN SELON LE CHOIX BIOLOGIQUE OU RADIOLOGIQUE
   function DisplayExamenBio(isBio) {
     const bio = document.querySelector("div[id='examen-bio']");
+    
     const inputOfExamen = document.querySelector("div[id='examen-autre-bio']");
     if (inputOfExamen) {
       inputOfExamen.classList.add("hideInput");
@@ -258,6 +336,9 @@ const NouvelleConsultation = (props) => {
 
   //POUR AFFICHER LE CHAMP DE TEXTE
   function handleExamenChangeBio(selectedOption) {
+    setTypeExamen("biologique");
+    setSpecificationExamen(selectedOption.value)
+    console.log(typeExamen)
     const inputOfExamen = document.querySelector("div[id='examen-autre-bio']");
     if (inputOfExamen) {
       inputOfExamen.classList.remove("hideInput");
@@ -274,6 +355,8 @@ const NouvelleConsultation = (props) => {
   }
   //POUR AFFICHER LE CHAMP DE TEXTE
   function handleExamenChangeRad(selectedOption) {
+    setTypeExamen("radiologique")
+    setSpecificationExamen(selectedOption.value)
     const inputOfExamen = document.querySelector("div[id='examen-autre-rad']");
     if (inputOfExamen) {
       inputOfExamen.classList.remove("hideInput");
@@ -293,10 +376,48 @@ const NouvelleConsultation = (props) => {
     router.push("/Patients/Patient");
   }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const medecinId = 1;
+    const antecedentPersonnel = { type, specification, specificationAutre,nombre };
+    const antecedentFamilial = {typeAntFam, autre};
+    const examenMedical = {typeExamen, specificationExamen, autreSpecification}
+    const consultation = {
+      date, motif, antecedentPersonnel,antecedentFamilial,historiqueClinique,examenClinique,examenMedical,diagnostic,ordonnance,medecinId
+    }
+    console.log("trying to fetch")
+
+    const res = await fetch (`http://localhost:8080/jeunes/${id}/consultations`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(consultation)
+    })
+
+    if (res.status === 200 ){
+      
+      router.push(`/Patients`)
+    }
+  }
+
   // -------DATA-------
-  const [selectedOption, setSelectedOption] = useState("Choisir");
+  // const [selectedOption, setSelectedOption] = useState("Choisir");
+
+  if (loading) {
+    return <div>Loading...</div>; // Afficher un message ou un spinner de chargement
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>; // Afficher un message d'erreur
+  }
+
+  if (!patient) {
+    return <div>No patient data available</div>; // Afficher un message si les données ne sont pas disponibles
+  }
+
+  
 
   return (
+   
     <div id="root">
       <div className="page-wrapper">
         <div className="content">
@@ -305,11 +426,11 @@ const NouvelleConsultation = (props) => {
             <div className="col-sm-12">
               <div className="card">
                 <div className="card-body">
-                  <form>
+                  <form onSubmit={handleSubmit}>
                     <div className="row">
                       <div className="col-12 mb-4">
                         <div className="form-heading mb-7">
-                          <h3>{actionName} une consultation pour M. Yamine Lamal</h3>
+                          <h3>{actionName} une consultation pour {patient.nom} {patient.prenom}</h3>
                         </div>
                       </div>
 
@@ -324,7 +445,7 @@ const NouvelleConsultation = (props) => {
                           <input
                             className="form-control"
                             type="text"
-                            value="I32783782"
+                            value={patient.identifiantPatient}
                             readOnly="readonly"
                           />
                         </div>
@@ -337,7 +458,7 @@ const NouvelleConsultation = (props) => {
                           <input
                             className="form-control"
                             type="text"
-                            value="Homme"
+                            value={patient.sexe}
                             readOnly="readonly"
                           />
                         </div>
@@ -352,7 +473,7 @@ const NouvelleConsultation = (props) => {
                             type="text"
                             placeholder=""
                             readOnly="readonly"
-                            value="17 Ans"
+                            value={patient.age}
                           />
                         </div>
                       </div>
@@ -360,16 +481,60 @@ const NouvelleConsultation = (props) => {
                       <div className="form-heading">
                         <h4>2. Motif</h4>
                       </div>
-                      <SelectInput 
+                      <Select
+                            menuPortalTarget={document.body}
+                            styles={{
+                              menuPortal: (base) => ({ ...base, zIndex: 9999 })
+                            }}
+                            defaultValue={defaultOption}
+                            onChange={(selectedOption)=>{
+                              setMotif(selectedOption.value);
+                          
+                            }}
+                            options={motifs}
+                            id="motifs"
+                            components={{
+                              IndicatorSeparator: () => null
+                            }}
+                            // eslint-disable-next-line react/jsx-no-duplicate-props
+                            styles={{
+                              control: (baseStyles, state) => ({
+                                ...baseStyles,
+                                borderColor: state.isFocused
+                                  ? "none"
+                                  : "2px solid rgba(46, 55, 164, 0.1);",
+                                boxShadow: state.isFocused
+                                  ? "0 0 0 1px #2e37a4"
+                                  : "none",
+                                "&:hover": {
+                                  borderColor: state.isFocused
+                                    ? "none"
+                                    : "2px solid rgba(46, 55, 164, 0.1)"
+                                },
+                                borderRadius: "10px",
+                                fontSize: "14px",
+                                minHeight: "45px"
+                              }),
+                              dropdownIndicator: (base, state) => ({
+                                ...base,
+                                transform: state.selectProps.menuIsOpen
+                                  ? "rotate(-180deg)"
+                                  : "rotate(0)",
+                                transition: "250ms",
+                                width: "35px",
+                                height: "35px"
+                              })
+                            }}
+                          />
+                      {/* <SelectInput 
                         columnSize = {[12,12,12]}
                         label = "Motif"
                         default = {defaultOption}
-                        options = {motif}
-                        id = "motif"
+                        options = {motifs}
+                        id = "motifs"
                         hide = {false}
                         functions = {[setSelectedOption]}   
-                      />
-
+                      /> */}
                       <div className="form-heading">
                         <h4>3. Antécédents</h4>
                       </div>
@@ -556,6 +721,10 @@ const NouvelleConsultation = (props) => {
                             className="form-control"
                             type="text"
                             placeholder="Saisir.."
+                            onChange={event =>{
+                              setSpecification(event.target.value);
+                              console.log(specification);
+                            }}
                           />
                         </div>
                       </div>
@@ -572,6 +741,10 @@ const NouvelleConsultation = (props) => {
                             className="form-control"
                             type="text"
                             placeholder="Saisir.."
+                            onChange={event => {
+                              setSpecificationAutre(event.target.value);
+                              console.log(specificationAutre)
+                            }}
                           />
                         </div>
                       </div>
@@ -694,6 +867,10 @@ const NouvelleConsultation = (props) => {
                             className="form-control"
                             type="text"
                             placeholder="Saisir.."
+                            onChange={event => {
+                              setAutre(event.target.value)
+                              console.log("autre:" +autre)
+                            }}
                           />
                         </div>
                       </div>
@@ -714,6 +891,11 @@ const NouvelleConsultation = (props) => {
                             placeholder={
                               "Veuillez décrire brièvement l'histoire de la maladie .."
                             }
+                            onChange={(event) => {
+                              setHistoriqueClinique(event.target.value)
+                              console.log(historiqueClinique)
+                            }}
+                            
                           />
                         </div>
                       </div>
@@ -733,6 +915,10 @@ const NouvelleConsultation = (props) => {
                             placeholder={
                               "Veuillez décrire brièvement l'examen clinique effectué aujourd'hui .."
                             }
+                            onChange={event => {
+                              setExamenClinique(event.target.value);
+                              console.log(examenClinique)
+                            }}
                           />
                         </div>
                       </div>
@@ -896,6 +1082,9 @@ const NouvelleConsultation = (props) => {
                             className="form-control"
                             type="text"
                             placeholder="Saisir.."
+                            onChange={event =>{
+                              setAutreSpecification(event.target.value)
+                            }}
                           />
                         </div>
                       </div>
@@ -912,6 +1101,9 @@ const NouvelleConsultation = (props) => {
                             className="form-control"
                             type="text"
                             placeholder="Saisir.."
+                            onChange={event =>{
+                              setAutreSpecification(event.target.value)
+                            }}
                           />
                         </div>
                       </div>
@@ -1003,6 +1195,10 @@ const NouvelleConsultation = (props) => {
                             placeholder={
                               "Veuillez entrer l'ordonnance de consultation .."
                             }
+                            onChange={event => {
+                              setOrdonnance(event.target.value);
+                              console.log(ordonnance)
+                            }}
                           />
                         </div>
                       </div>
@@ -1012,15 +1208,16 @@ const NouvelleConsultation = (props) => {
                           <button
                             type="submit"
                             className="btn me-1 customizedBtn save"
-                          >
-                            <Link
+                            
+                          > Enregistrer
+                            {/* <Link
                               className="dropdown-item"
                               href="#"
                               data-bs-toggle="modal"
                               data-bs-target="#delete_patient"
                             >
                               {buttonName}
-                            </Link>
+                            </Link> */}
                           </button>
                           <button
                             type="button"
@@ -1078,5 +1275,5 @@ const NouvelleConsultation = (props) => {
   );
 
 };
+ 
 
-export default NouvelleConsultation;

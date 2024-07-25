@@ -1,129 +1,87 @@
-"use client";
+"use client"
+import React, { useEffect, useState } from 'react';
 import Sidebar from "@/components/Sidebar";
 import NavigationHeader from "@/components/NavigationHeader";
-import Link from "next/link";
 import Image from "next/image";
-import "@/assets/css/links.css"; //sublines on linkes
+import "@/assets/css/links.css";
 import "@/assets/css/center.module.css";
 import "@/assets/css/hist.css";
 import {
   teeth,
   consultation,
-  bones,
-  eye,
-  heart,
-  lungs,
-  stomach,
-  dep_icon1
+  eye
 } from "@/components/imagepath";
-// import { redirect } from 'next/navigation'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import { handleGenerateDocument } from "../page";
 
-const Historique = () => {
-  const pages = ["Patients", "Patient", "Historique"];
+const Historique = ({ params }) => {
+  const [consultations, setConsultations] = useState([]);
   const router = useRouter();
-  function handleModify(){
-    console.log('hy');
+  const { id } = params;
+
+  useEffect(() => {
+    const fetchConsultations = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/jeunes/${id}`);
+        const data = await response.json();
+        setConsultations(data.dossierMedial.historiqueConsultations);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données:', error);
+      }
+    };
+
+    fetchConsultations();
+  }, [id]);
+
+  const handleModify = () => {
     router.push("Consultation/modifier");
-    console.log(router);
-  }
+  };
+
   return (
     <div id="root">
       <Sidebar activeClassName="patients" />
       <div className="page-wrapper">
         <div className="content">
-          <NavigationHeader pages={pages} currentPage="Historique" />
+          <NavigationHeader pages={["Patients", "Patient", "Historique"]} currentPage="Historique" />
 
           <div className="row hist-row">
             <div className="col-md-12 hist-card">
               <div className="card">
                 <div className="card-body">
                   <ul className="timeline">
-                    <li>
-                      <button
-                        className="timeline-badge activity-boxs comman-flex-center"
-                        // className="btn btn-success waves-effect waves-light mt-1"
-                        data-bs-toggle="modal"
-                        data-bs-target="#con-close-modal"
-                      >
-                        <Image
-                          src={teeth}
-                          style={{ width: "50%", height: "50%" }}
-                          height={50}
-                          alt="#"
-                        />
-                      </button>
+                    {consultations.map(consultation => (
+                      <li key={consultation.id} className={consultation.id % 2 === 0 ? "timeline-inverted" : ""}>
+                        <button className="timeline-badge activity-boxs comman-flex-center"
+                          data-bs-toggle="modal"
+                          data-bs-target="#con-close-modal">
+                          <Image
+                            src={consultation.motif.includes("Bucco-dentaire") ? teeth : eye} // Remplacez selon vos besoins
+                            style={{ width: "50%", height: "50%" }}
+                            height={50}
+                            alt="#"
+                          />
+                        </button>
 
-                      <button className="timeline-panel" 
-                        data-bs-toggle="modal"
-                        data-bs-target="#con-close-modal"
-                        data-bs-toggle="modal"
-                        data-bs-target="#con-close-modal">
-                        <div className="timeline-heading">
-                          <h5 className="">09 Decemebre 2022</h5>
-                        </div>
-                        <div className="timeline-body">
-                          <p>Bucco-dentaire</p>
-                          <p>Examen Clinique</p>
-                        </div>
-                      </button>
-                    </li>
-                    <li className="timeline-inverted">
-                      <button className="timeline-badge activity-boxs comman-flex-center"
-                        data-bs-toggle="modal"
-                        data-bs-target="#con-close-modal">
-                        <Image
-                          src={eye}
-                          style={{ width: "50%", height: "50%" }}
-                          height={50}
-                          alt="#"
-                        />
-                      </button>
-
-                      <button className="timeline-panel"
-                        data-bs-toggle="modal"
-                        data-bs-target="#con-close-modal">
-                        <div className="timeline-heading">
-                          <h5 className="">18 Juillet 2023</h5>
-                        </div>
-                        <div className="timeline-body">
-                          <p>Ophtalmique</p>
-                          <p>Examen Clinique</p>
-                        </div>
-                      </button>
-                    </li>
-                    <li>
-                      <button className="timeline-badge activity-boxs comman-flex-center"
-                        data-bs-toggle="modal"
-                        data-bs-target="#con-close-modal">
-                        <Image
-                          src={teeth}
-                          style={{ width: "50%", height: "50%" }}
-                          height={50}
-                          alt="#"
-                        />
-                      </button>
-
-                      <button className="timeline-panel"
-                        data-bs-toggle="modal"
-                        data-bs-target="#con-close-modal">
-                        <div className="timeline-heading">
-                          <h5 className="">02 Janvier 2024</h5>
-                        </div>
-                        <div className="timeline-body">
-                          <p>Bucco-dentaire</p>
-                          <p>Examen Clinique</p>
-                        </div>
-                      </button>
-                    </li>
+                        <button className="timeline-panel"
+                          data-bs-toggle="modal"
+                          data-bs-target="#con-close-modal">
+                          <div className="timeline-heading">
+                            <h5 className="">Date : {consultation.date}</h5>
+                          </div>
+                          <div className="timeline-body">
+                            <p>Motif : {consultation.motif}</p>
+                            <p>Examen : {consultation.examenClinique}</p>
+                          </div>
+                        </button>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+        </div>
       <div
         id="con-close-modal"
         className="modal fade"
