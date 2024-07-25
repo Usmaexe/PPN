@@ -144,40 +144,40 @@ export default function Consultations() {
           </Link>
         </Button>
         <div className="relative">
-          <Button
-            className="flex items-center justify-center space-x-2 bg-blue-500 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:bg-blue-700 transition duration-300"
-            onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
+      <Button
+        className="flex items-center justify-center space-x-2 bg-blue-500 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:bg-blue-700 transition duration-300"
+        onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
+      >
+        <FaSort />
+        <span>Trier</span>
+      </Button>
+      {sortDropdownOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+          <button
+            className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+            onClick={() => handleSortChange("dateAsc")}
           >
-            <FaSort />
-            <span>Trier</span>
-          </Button>
-          {sortDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
-              <button
-                className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
-                onClick={() => handleSortChange("dateAsc")}
-              >
-                Date (Ascendant)
-              </button>
-              <button
-                className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
-                onClick={() => handleSortChange("dateDesc")}
-              >
-                Date (Descendant)
-              </button>
-              <button
-                className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
-                onClick={() => handleSortChange("titleAsc")}
-              >
-                Titre (A-Z)
-              </button>
-              <button
-                className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
-                onClick={() => handleSortChange("titleDesc")}
-              >
-                Titre (Z-A)
-              </button>
-            </div>
+            Date (Ascendant)
+          </button>
+          <button
+            className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+            onClick={() => handleSortChange("dateDesc")}
+          >
+            Date (Descendant)
+          </button>
+          <button
+            className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+            onClick={() => handleSortChange("titleAsc")}
+          >
+            Titre (A-Z)
+          </button>
+          <button
+            className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+            onClick={() => handleSortChange("titleDesc")}
+          >
+            Titre (Z-A)
+          </button>
+        </div>
           )}
         </div>
       </div>

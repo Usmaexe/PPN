@@ -75,3 +75,41 @@
       @apply bg-background text-foreground;
     }
   }
+
+
+
+  html[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+  }
+
+  html[dir="rtl"] .nav-item {
+    margin-left: 0;
+    margin-right: 20px; /* Pour assurer un espacement suffisant en mode RTL */
+  }
+  
+ 
+
+
+  /* Ajoutez ce CSS pour gérer les marges en fonction de la direction */
+.navbar-item {
+  margin-inline-start: 1rem; /* remplace margin-left */
+  margin-inline-end: 1rem; /* remplace margin-right */
+}
+
+
+
+body[dir="rtl"] .navbar {
+  flex-direction: row-reverse; /* Réverser la direction pour RTL */
+}
+
+
+/* CSS global pour la direction du texte */
+html[dir="rtl"] .arrow-icon {
+  transform: rotate(180deg); /* Tourner la flèche de 180 degrés en mode RTL */
+}
+
+/* Styles de base pour les icônes de flèche */
+.arrow-icon {
+  transition: transform 0.3s ease; /* Ajouter une transition pour une animation fluide */
+}
