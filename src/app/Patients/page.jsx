@@ -45,7 +45,7 @@ const Patients = () => {
       dataIndex: "id",
       render: (text, record) => (
         <h2 className="profile-image">
-          <Link href={`${path}/${record.id}`}>{record.id}</Link>
+          <Link href={`${path}/${record.id}`}>{record.identifiantPatient}</Link>
         </h2>
       ),
       sorter: (a, b) => a.id - b.id

@@ -17,9 +17,9 @@ const antecedants = [
 const medicaments = [
   { value: "Asthme", label: "Asthme" },
   { value: "Diabète", label: "Diabète" },
-  { value: "Epilepsie", label: "Epilepsie" },
-  { value: "TSA", label: "Troubles du spectre de l'autisme (TSA)" },
-  { value: "Trouble de Sommeil", label: "Trouble de Sommeil" },
+  // { value: "Epilepsie", label: "Epilepsie" },
+  // { value: "TSA", label: "Troubles du spectre de l'autisme (TSA)" },
+  // { value: "Trouble de Sommeil", label: "Trouble de Sommeil" },
   { value: "AUTRE", label: "Autre.." }
 ];
 const habitudes = [
