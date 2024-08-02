@@ -53,11 +53,9 @@ export default function Consultations() {
         type: "chirurgical",
         details: "Chirurgie de la peau antérieure"
       },
-      historiqueClinique: "Éruption cutanée depuis 3 semaines",
-      examenClinique: "Examen visuel de la peau, biopsie",
-      examenMedical: "Biopsie cutanée",
-      diagnostic: "Dermatite de contact",
-      ordonnance: "Corticostéroïdes topiques"
+      Interrogatoire: "Éruption cutanée depuis 3 semaines",
+      examenCliniqueBioRad: "Examen visuel de la peau, biopsie",
+      ConseilsRecommondations: "Corticostéroïdes topiques"
     }
   ]
   
@@ -225,25 +223,19 @@ export default function Consultations() {
                         <span className="font-bold">Médecin:</span> {consultation.doctor}
                       </p>
                       <p className="text-md mt-2">
-                        <span className="font-bold">Motif:</span> {consultation.motif}
+                        <span className="font-bold">Motif de Consultation:</span> {consultation.motif}
                       </p>
                       <p className="text-md mt-2">
                         <span className="font-bold">Antécédents ({consultation.antecedents.type}):</span> {consultation.antecedents.details}
                       </p>
                       <p className="text-md mt-2">
-                        <span className="font-bold">Historique Clinique:</span> {consultation.historiqueClinique}
+                        <span className="font-bold">Interrogatoire:</span> {consultation.Interrogatoire}
                       </p>
                       <p className="text-md mt-2">
-                        <span className="font-bold">Examen Clinique:</span> {consultation.examenClinique}
+                        <span className="font-bold">Examen Clinique Biologique et Radiologique:</ span> {consultation.examenCliniqueBioRad}
                       </p>
                       <p className="text-md mt-2">
-                        <span className="font-bold">Examen Médical:</span> {consultation.examenMedical}
-                      </p>
-                      <p className="text-md mt-2">
-                        <span className="font-bold">Diagnostic:</span> {consultation.diagnostic}
-                      </p>
-                      <p className="text-md mt-2">
-                        <span className="font-bold">Ordonnance:</span> {consultation.ordonnance}
+                        <span className="font-bold">Conseils et Recomendations:</span> {consultation.ConseilsRecommondations}
                       </p>
                   </div>
                 )}
@@ -293,19 +285,13 @@ export default function Consultations() {
               <span className="font-bold">Antécédents ({selectedConsultation.antecedents.type}):</span> {selectedConsultation.antecedents.details}
             </p>
             <p className="text-md">
-              <span className="font-bold">Historique Clinique:</span> {selectedConsultation.historiqueClinique}
+              <span className="font-bold">Interrogatoire:</span> {selectedConsultation.Interrogatoire}
             </p>
             <p className="text-md">
-              <span className="font-bold">Examen Clinique:</span> {selectedConsultation.examenClinique}
+              <span className="font-bold">Examen Clinique Biologique et Radiologique:</span> {selectedConsultation.examenCliniqueBioRad}
             </p>
             <p className="text-md">
-              <span className="font-bold">Examen Médical:</span> {selectedConsultation.examenMedical}
-            </p>
-            <p className="text-md">
-              <span className="font-bold">Diagnostic:</span> {selectedConsultation.diagnostic}
-            </p>
-            <p className="text-md">
-              <span className="font-bold">Ordonnance:</span> {selectedConsultation.ordonnance}
+              <span className="font-bold">Conseils et Recomendations:</span> {selectedConsultation.ConseilsRecommondations}
             </p>
             
             <button

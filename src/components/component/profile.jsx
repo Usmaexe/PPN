@@ -24,7 +24,6 @@ export function Profile() {
     occupation: t("Ouvrier"),
     phone: "0612345678",
     email: "Ahmed000@gmail.com",
-    bloodType: "O+"
   };
 
   return (
@@ -118,12 +117,6 @@ export function Profile() {
             <p>{t("Adresse mail")}</p>
             <p className={`text-muted-foreground`}>
               <strong>{translatedData.email}</strong>
-            </p>
-          </div>
-          <div>
-            <p>{t("Type de sang")}</p>
-            <p className={`text-muted-foreground`}>
-              <strong>{translatedData.bloodType}</strong>
             </p>
           </div>
         </div>
