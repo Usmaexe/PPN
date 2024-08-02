@@ -1,22 +1,29 @@
-"use client"
-import Navbar from "../Navbar"
-import { useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+"use client";
+import Navbar from "../Navbar";
+import { useTranslations } from 'next-intl';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { UserImage } from "../ui/icons";
+import "../../app/globals.css";
 
 export function Profile() {
+  const t = useTranslations('');
+
+  // Déterminez si la langue est RTL
+  // Cela peut être déterminé de manière statique ou dynamique selon vos besoins
+  const isRtl = false; // Remplacez ceci par la logique réelle pour déterminer RTL
+
   const translatedData = {
-    name: "BERRADA KARIM",
+    name: "Ahmed HILAL",
     cin: "CIN: A123456",
     dob: "10/05/2000",
-    gender: "Masculin",
-    id: "j0001",
-    education: "Non scolarisé",
+    gender: t("Masculin"),
+    NIP: "j0001",
+    education: t("Non scolarisé"),
     address: "Avenue Allal El Fassi, 10112 Rabat, Maroc",
-    occupation: "Ouvrier",
+    occupation: t("Ouvrier"),
     phone: "0612345678",
-    email: "karim.berrada@example.com",
+    email: "Ahmed000@gmail.com",
     bloodType: "O+"
   };
 
@@ -35,7 +42,7 @@ export function Profile() {
               viewBox="0 0 24 24"
               strokeWidth="2"
               stroke="currentColor"
-              className="w-5 h-5"
+              className="w-5 h-5 arrow-icon"
             >
               <path
                 strokeLinecap="round"
@@ -66,69 +73,58 @@ export function Profile() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p>Date de naissance</p>
+            <p>{t("Date de naissance")}</p>
             <p className={`text-muted-foreground`}>
               <strong>{translatedData.dob}</strong>
             </p>
-            
           </div>
           <div>
-            <p>Sexe</p>
+            <p>{t("Sexe")}</p>
             <p className={`text-muted-foreground`}>
               <strong>{translatedData.gender}</strong>
             </p>
-            
           </div>
           <div>
-            <p>Id</p>
+            <p>{t("NIP")}</p>
             <p className={`text-muted-foreground`}>
-              <strong>{translatedData.id}</strong>
+              <strong>{translatedData.NIP}</strong>
             </p>
-            
           </div>
           <div>
-            <p>Scolarité</p>
+            <p>{t("Scolarisation")}</p>
             <p className={`text-muted-foreground`}>
               <strong>{translatedData.education}</strong>
             </p>
-            
           </div>
           <div>
-            <p>Adresse</p>
+            <p>{t("Adresse")}</p>
             <p className={`text-muted-foreground`}>
               <strong>{translatedData.address}</strong>
             </p>
-            
           </div>
           <div>
-            <p>Activité</p>
+            <p>{t("Activité")}</p>
             <p className={`text-muted-foreground`}>
               <strong>{translatedData.occupation}</strong>
             </p>
-            
           </div>
           <div>
-            <p>Numéro de téléphone</p>
+            <p>{t("Numéro de téléphone")}</p>
             <p className={`text-muted-foreground`}>
               <strong>{translatedData.phone}</strong>
             </p>
-            
           </div>
           <div>
-            <p>
-              Adresse mail
-            </p>
+            <p>{t("Adresse mail")}</p>
             <p className={`text-muted-foreground`}>
               <strong>{translatedData.email}</strong>
             </p>
-            
           </div>
           <div>
-            <p>Type de sang</p>
+            <p>{t("Type de sang")}</p>
             <p className={`text-muted-foreground`}>
               <strong>{translatedData.bloodType}</strong>
             </p>
-            
           </div>
         </div>
       </div>
