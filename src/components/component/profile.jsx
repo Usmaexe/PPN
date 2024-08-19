@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { UserImage } from "../ui/icons";
 import "../../app/globals.css";
+import { useSSR } from "react-i18next";
+import { useState, useEffect } from "react";
 
 export function Profile() {
   const t = useTranslations('');
@@ -13,23 +15,40 @@ export function Profile() {
   // Cela peut être déterminé de manière statique ou dynamique selon vos besoins
   const isRtl = false; // Remplacez ceci par la logique réelle pour déterminer RTL
 
-  const translatedData = {
-    name: "Ahmed HILAL",
-    cin: "CIN: A123456",
-    dob: "10/05/2000",
-    gender: t("Masculin"),
-    NIP: "j0001",
-    education: t("Non scolarisé"),
-    address: "Avenue Allal El Fassi, 10112 Rabat, Maroc",
-    occupation: t("Ouvrier"),
-    phone: "0612345678",
-    email: "Ahmed000@gmail.com",
-    bloodType: "O+"
-  };
+  // const patient = {
+  //   name: "Ahmed HILAL",
+  //   cin: "CIN: A123456",
+  //   dob: "10/05/2000",
+  //   gender: t("Masculin"),
+  //   NIP: "j0001",
+  //   education: t("Non scolarisé"),
+  //   address: "Avenue Allal El Fassi, 10112 Rabat, Maroc",
+  //   occupation: t("Ouvrier"),
+  //   phone: "0612345678",
+  //   email: "Ahmed000@gmail.com",
+  // };
+
+  const id = 5;
+  const [patient,setPatient] = useState("");
+
+  useEffect(() => {
+    
+    if (id) {
+      // Remplacez l'URL par celle de votre API ou de votre backend
+      fetch(`http://localhost:8080/jeunes/` + id)
+        .then(response => response.json())
+        .then(data => setPatient(data))
+        .catch(error => console.error('Error fetching patient:', error));
+    }
+  }, [id]);
+
+  if (!patient) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className={`bg-white rounded-lg shadow-md overflow-hidden`}>
-      <Navbar />
+      <Navbar tab="Dossier Medical" />
       
       <div className="flex justify-start p-4">
         <Button
@@ -65,9 +84,9 @@ export function Profile() {
             />
           </div>
           <div>
-            <h2 className="text-xl font-bold">{translatedData.name}</h2>
+            <h2 className="text-xl font-bold">{patient.nom} {patient.prenom}</h2>
             <p className={`text-muted-foreground`}>
-              {translatedData.cin}
+              {patient.cin}
             </p>
           </div>
         </div>
@@ -75,55 +94,49 @@ export function Profile() {
           <div>
             <p>{t("Date de naissance")}</p>
             <p className={`text-muted-foreground`}>
-              <strong>{translatedData.dob}</strong>
+              <strong>{patient.dateNaissance}</strong>
             </p>
           </div>
           <div>
             <p>{t("Sexe")}</p>
             <p className={`text-muted-foreground`}>
-              <strong>{translatedData.gender}</strong>
+              <strong>{patient.sexe}</strong>
             </p>
           </div>
           <div>
             <p>{t("NIP")}</p>
             <p className={`text-muted-foreground`}>
-              <strong>{translatedData.NIP}</strong>
+              <strong>{patient.identifiantPatient}</strong>
             </p>
           </div>
           <div>
             <p>{t("Scolarisation")}</p>
             <p className={`text-muted-foreground`}>
-              <strong>{translatedData.education}</strong>
+              <strong>{patient.scolarise ? "Oui" : "Non"}</strong>
             </p>
           </div>
           <div>
             <p>{t("Adresse")}</p>
             <p className={`text-muted-foreground`}>
-              <strong>{translatedData.address}</strong>
+              <strong>{patient.address}</strong>
             </p>
           </div>
           <div>
             <p>{t("Activité")}</p>
             <p className={`text-muted-foreground`}>
-              <strong>{translatedData.occupation}</strong>
+              <strong>{patient.occupation}</strong>
             </p>
           </div>
           <div>
             <p>{t("Numéro de téléphone")}</p>
             <p className={`text-muted-foreground`}>
-              <strong>{translatedData.phone}</strong>
+              <strong>{patient.phone}</strong>
             </p>
           </div>
           <div>
             <p>{t("Adresse mail")}</p>
             <p className={`text-muted-foreground`}>
-              <strong>{translatedData.email}</strong>
-            </p>
-          </div>
-          <div>
-            <p>{t("Type de sang")}</p>
-            <p className={`text-muted-foreground`}>
-              <strong>{translatedData.bloodType}</strong>
+              <strong>{patient.email}</strong>
             </p>
           </div>
         </div>
