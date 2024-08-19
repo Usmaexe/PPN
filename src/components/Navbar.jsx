@@ -7,7 +7,7 @@ import { FaRegUser } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { GlobeIcon } from './ui/icons';
 
-export default function Navbar() {
+export default function Navbar(props) {
   const t = useTranslations('');
   const [language, setLanguage] = useState("fr");
   const [activeButton, setActiveButton] = useState("");
@@ -70,11 +70,12 @@ export default function Navbar() {
 
   const navItems = [
     { title: t('Accueil'), href: '#' },
+    { title: t('Tele-Exepertise'), href: '/TeleExpertise' },
     { title: t('Dossier Medical'), href: '#' },
     { title: t('Education à la Santé'), href: '#' },
     { title: t('Tests Psychologiques'), href: '#' },
   ];
-
+  console.log(navItems[2].title);
   return (
     <nav className="fixed-navbar p-4 shadow-gray-300 shadow-md h-16 flex items-center justify-between bg-white text-black relative">
       <div className="container mx-auto flex items-center justify-between">
@@ -84,7 +85,7 @@ export default function Navbar() {
             <a
               key={item.title}
               href={item.href}
-              className={`hover:font-semibold text-gray-950 ${selectedTab === item.title ? 'border-b-4 pb-2 border-blue-900 font-semibold' : ''}`}
+              className={`hover:font-semibold text-gray-950 ${t(props.tab) === item.title ? 'border-b-4 pb-2 border-blue-900 font-semibold' : ''}`}
               onClick={() => handleTabClick(item.title)}
               style={{ marginInlineStart: "1rem", marginInlineEnd: "1rem" }}
             >

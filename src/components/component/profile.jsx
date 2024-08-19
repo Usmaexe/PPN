@@ -28,7 +28,7 @@ export function Profile() {
 
   return (
     <div className={`bg-white rounded-lg shadow-md overflow-hidden`}>
-      <Navbar />
+      <Navbar tab="Dossier Medical" />
       
       <div className="flex justify-start p-4">
         <Button

@@ -27,10 +27,10 @@ export function Medrec() {
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
   };
-
+  const selectedTab = "Dossier Medical"
   return (
     <div className={`flex flex-col min-h-screen ${theme === 'light' ? 'bg-[#e6f2ff]' : 'bg-gray-800'}`}>
-      <Navbar toggleTheme={toggleTheme} theme={theme} />
+      <Navbar toggleTheme={toggleTheme} theme={theme} tab={selectedTab} />
 
       <div className="flex flex-1 border-t border-muted-foreground/20">
         <main className={`flex-1 p-8 ${theme === 'light' ? 'bg-[#e6f2ff]' : 'bg-gray-800'}`}>
