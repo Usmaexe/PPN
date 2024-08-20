@@ -285,7 +285,7 @@ export default function Consultations() {
               <span className="font-bold">Antécédents ({selectedConsultation.antecedents.type}):</span> {selectedConsultation.antecedents.details}
             </p>
             <p className="text-md">
-              <span className="font-bold">Interrogatoire:</span> {selectedConsultation.Interrogatoire}
+              <span className="font-bold">Interrogato:</span> {selectedConsultation.Interrogatoire}
             </p>
             <p className="text-md">
               <span className="font-bold">Examen Clinique Biologique et Radiologique:</span> {selectedConsultation.examenCliniqueBioRad}
