@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
@@ -20,44 +20,35 @@ export default function Consultations() {
   const [sortMode, setSortMode] = useState("dateDesc")
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false)
 
-  const consultations = [
-    {
-      id: 1,
-      title: "Consultation Cardiologie",
-      type: "Suivi - ECG",
-      location: "Espace Santé Jeune SALE TABRIQUET",
-      date: "2024-07-15",
-      doctor: "Dr. Monaim BLAYZA",
-      info: "Consultation détaillée en cardiologie incluant un électrocardiogramme (ECG). Le patient a présenté des symptômes de douleur thoracique et essoufflement. L'ECG a révélé une tachycardie sinusale.",
-      motif: "Douleur thoracique et essoufflement",
-      antecedents: {
-        type: "medical",
-        details: "Hypertension, antécédents familiaux de maladies cardiaques"
-      },
-      historiqueClinique: "Douleur thoracique intermittente depuis 2 mois",
-      examenClinique: "ECG, auscultation cardiaque",
-      examenMedical: "Analyse sanguine, ECG",
-      diagnostic: "Tachycardie sinusale",
-      ordonnance: "Bêta-bloquants, régime pauvre en sodium"
-    },
-    {
-      id: 2,
-      title: "Consultation Dermatologie",
-      type: "Examen - Biopsie",
-      location: "Espace Santé Jeune AIN EL AOUDA",
-      date: "2024-07-16",
-      doctor: "Dr. CHINWI",
-      info: "Consultation en dermatologie pour évaluation d'une éruption cutanée persistante. Une biopsie cutanée a été effectuée pour exclure des pathologies plus graves. Le diagnostic final a révélé une dermatite de contact.",
-      motif: "Éruption cutanée persistante",
-      antecedents: {
-        type: "chirurgical",
-        details: "Chirurgie de la peau antérieure"
-      },
-      Interrogatoire: "Éruption cutanée depuis 3 semaines",
-      examenCliniqueBioRad: "Examen visuel de la peau, biopsie",
-      ConseilsRecommondations: "Corticostéroïdes topiques"
-    }
-  ]
+  const [consultations, setConsultations] = useState([]);
+  const [medecins, setMedecins] = useState([]);
+  const id = 7;
+
+  useEffect(() => {
+    const fetchConsultations = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/jeunes/${id}`);
+        const data = await response.json();
+        setConsultations(data.dossierMedial.historiqueConsultations);
+        console.log(consultations)
+
+        const medecinPromises = data.dossierMedial.historiqueConsultations.map(consultation =>
+          fetch(`http://localhost:8080/medecins/${consultation.medecin}`)
+            .then(response => response.json())
+            .then(medecinData => ({ [consultation.medecin]: `${medecinData.prenom} ${medecinData.nom}` }))
+        );
+  
+        const medecinResults = await Promise.all(medecinPromises);
+        const medecinsMap = Object.assign({}, ...medecinResults);
+
+        setMedecins(medecinsMap);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données:', error);
+      }
+    };
+
+    fetchConsultations();
+  }, [id]);
   
 
   const handleSearch = (event) => {
@@ -112,7 +103,7 @@ export default function Consultations() {
   }
 
   const filteredConsultations = consultations.filter(consultation =>
-    consultation.title.toLowerCase().includes(searchTerm.toLowerCase())
+    consultation.motif.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const sortedConsultations = sortConsultations(filteredConsultations, sortMode)
@@ -198,13 +189,13 @@ export default function Consultations() {
           <Card
             key={consultation.id}
             className={`p-4 rounded-lg shadow-md ${
-              searchTerm.toLowerCase().includes(consultation.title.toLowerCase()) ? "bg-blue-500 text-white" : "bg-white"
+              searchTerm.toLowerCase().includes(consultation.motif.toLowerCase()) ? "bg-blue-500 text-white" : "bg-white"
             }`}
           >
             <div className="flex justify-between items-start">
               <CardContent>
                 <div className="flex items-center">
-                  <h2 className={`text-xl font-semibold ${searchTerm.toLowerCase().includes(consultation.title.toLowerCase()) ? "text-white" : "text-[#1877F2]"}`}>
+                  <h2 className={`text-xl font-semibold ${searchTerm.toLowerCase().includes(consultation.motif.toLowerCase()) ? "text-white" : "text-[#1877F2]"}`}>
                     {consultation.title}
                   </h2>
                   <button
@@ -214,37 +205,46 @@ export default function Consultations() {
                     Info
                   </button>
                 </div>
-                  <p className="text-md font-semibold">Type:</p>
-                  <p className="text-md">{consultation.type}</p>
+                  <p className="text-md font-semibold">Consultation du:</p>
+                  <p className="text-md">{consultation.date}</p>
                   {expandedConsultations.includes(consultation.id) && (
                     <div className="mt-2">
                       <p className="text-md">{consultation.info}</p>
                       <p className="text-md  mt-2">
-                        <span className="font-bold">Médecin:</span> {consultation.doctor}
+                        <span className="font-bold">Médecin:</span> {medecins[consultation.medecin]}
                       </p>
                       <p className="text-md mt-2">
                         <span className="font-bold">Motif de Consultation:</span> {consultation.motif}
                       </p>
                       <p className="text-md mt-2">
-                        <span className="font-bold">Antécédents ({consultation.antecedents.type}):</span> {consultation.antecedents.details}
+                        <span className="font-bold">Antécédents Personnels:</span> {consultation.antecedentPersonnel?.type} - {consultation.antecedentPersonnel?.specification} 
                       </p>
                       <p className="text-md mt-2">
-                        <span className="font-bold">Interrogatoire:</span> {consultation.Interrogatoire}
+                        <span className="font-bold">Antécédents Familials:</span> {consultation.antecedentFamilial?.typeAntFam} - {consultation.antecedentFamilial?.autre} 
                       </p>
                       <p className="text-md mt-2">
-                        <span className="font-bold">Examen Clinique Biologique et Radiologique:</ span> {consultation.examenCliniqueBioRad}
+                        <span className="font-bold">Interrogatoire:</span> {consultation.interrogatoire}
                       </p>
                       <p className="text-md mt-2">
-                        <span className="font-bold">Conseils et Recomendations:</span> {consultation.ConseilsRecommondations}
+                        <span className="font-bold">Examen Clinique Biologique et Radiologique:</ span> {consultation.examenMedicals.map((examen, i) => (
+           examen.specificationExamen && (
+            <div key={i}>
+              <p>Type d'examen: {examen.typeExamen}</p>
+              <p>Spécification: {examen.specificationExamen}</p>
+              <p>Autre spécification: {examen.autreSpecification || 'N/A'}</p>
+            </div>
+          )
+        ))}
+                      </p>
+                      <p className="text-md mt-2">
+                        <span className="font-bold">Conseils et Recomendations:</span> {consultation.conseils}
                       </p>
                   </div>
                 )}
               </CardContent>
               <div>
-                <p className={`text-sm ${searchTerm.toLowerCase().includes(consultation.title.toLowerCase()) ? "text-white" : "text-gray-500"}`}>
-                  {consultation.location}
-                </p>
-                <p className={`text-sm ${searchTerm.toLowerCase().includes(consultation.title.toLowerCase()) ? "text-white" : "text-gray-500"}`}>
+                
+                <p className={`text-sm ${searchTerm.toLowerCase().includes(consultation.motif.toLowerCase()) ? "text-white" : "text-gray-500"}`}>
                   {consultation.date}
                 </p>
               </div>
@@ -272,26 +272,35 @@ export default function Consultations() {
           <div className="bg-white p-4 rounded-lg shadow-md w-3/4">
             <h2 className="text-xl font-semibold">{selectedConsultation.title}</h2>
             <p className="text-md">{selectedConsultation.info}</p>
-            <p className="text-md">
-              <span className="font-bold">Type:</span> {selectedConsultation.type}
-            </p>
+           
             <p className="text-md mt-2">
-              <span className="font-bold">Médecin:</span> {selectedConsultation.doctor}
+              <span className="font-bold">Médecin:</span> {medecins[selectedConsultation.medecin]}
             </p>
             <p className="text-md">
               <span className="font-bold">Motif:</span> {selectedConsultation.motif}
             </p>
             <p className="text-md">
-              <span className="font-bold">Antécédents ({selectedConsultation.antecedents.type}):</span> {selectedConsultation.antecedents.details}
+              <span className="font-bold">Antécédents Personnels:</span> {selectedConsultation.antecedentPersonnel?.type} - {selectedConsultation.antecedentPersonnel?.specification}
             </p>
             <p className="text-md">
-              <span className="font-bold">Interrogato:</span> {selectedConsultation.Interrogatoire}
+              <span className="font-bold">Antécédents Familials:</span> {selectedConsultation.antecedentFamilial?.typeAntFam} - {selectedConsultation.antecedentPersonnel?.autre}
             </p>
             <p className="text-md">
-              <span className="font-bold">Examen Clinique Biologique et Radiologique:</span> {selectedConsultation.examenCliniqueBioRad}
+              <span className="font-bold">Interrogatoire:</span> {selectedConsultation.interrogatoire}
             </p>
             <p className="text-md">
-              <span className="font-bold">Conseils et Recomendations:</span> {selectedConsultation.ConseilsRecommondations}
+               <span className="font-bold">Examen Clinique Biologique et Radiologique:</ span> {selectedConsultation.examenMedicals.map((examen, i) => (
+          examen.specificationExamen && (
+            <div key={i}>
+              <p>Type d'examen: {examen.typeExamen}</p>
+              <p>Spécification: {examen.specificationExamen}</p>
+              <p>Autre spécification: {examen.autreSpecification || 'N/A'}</p>
+            </div>
+          )
+        ))}
+            </p>
+            <p className="text-md">
+              <span className="font-bold">Conseils et Recomendations:</span> {selectedConsultation.conseils}
             </p>
             
             <button
